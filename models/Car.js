@@ -22,6 +22,10 @@ const Car = mongoose.model('Car', new mongoose.Schema({
     color: {
         type: String,
         default: 'Black'
+    },
+    active: {
+        type: Boolean,
+        default: true
     }
 }, {
     timestamps: true

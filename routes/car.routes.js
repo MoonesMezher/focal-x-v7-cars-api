@@ -9,11 +9,77 @@ router.get('/all', async (req, res) => {
     try {
         // Get all cars in the database
         
-        const data = await Car.find({});
+        const data = await Car.find({ active: true });
 
         return res.status(200).json({message: 'Get data successfully', data})
     } catch (error) {
         return res.status(500).json({message: error.message});
+    }
+})
+
+router.put('/activate/:id', async (req, res) => {
+    try {
+        // Check valid id 
+
+        const id = req.params.id;
+
+        if(!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({message: 'Invalid Id'})
+        }
+
+        const car = await Car.findById(id);
+
+        if(!car) {
+            return res.status(400).json({message: 'Invalid Car'})
+        }
+
+        if(car.active) {
+            return res.status(400).json({message: 'This car already active!'})
+        }
+
+        car.active = true;
+
+        await car.save();
+
+        return res.status(200).json({ message: "Activated successfully" })
+
+        // await Car.findByIdAndUpdate(id, {active: true})
+
+    } catch (error) {
+        return res.status(500).json({message: error.message});        
+    }
+})
+
+router.put('/disactivate/:id', async (req, res) => {
+    try {
+        // Check valid id 
+
+        const id = req.params.id;
+
+        if(!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({message: 'Invalid Id'})
+        }
+
+        const car = await Car.findById(id);
+
+        if(!car) {
+            return res.status(400).json({message: 'Invalid Car'})
+        }
+
+        if(!car.active) {
+            return res.status(400).json({message: 'This car already active!'})
+        }
+
+        car.active = false;
+
+        await car.save();
+
+        return res.status(200).json({ message: "Disactivated successfully" })
+
+        // await Car.findByIdAndUpdate(id, {active: true})
+
+    } catch (error) {
+        return res.status(500).json({message: error.message});        
     }
 })
 
@@ -70,9 +136,9 @@ router.post('/add', async (req, res) => {
             return res.status(400).json({message: 'Color must be a string'})
         }
 
-        if(typeof price !== 'number') {
-            return res.status(400).json({message: 'Price must be a number'})
-        }
+        // if(typeof price !== 'number') {
+        //     return res.status(400).json({message: 'Price must be a number'})
+        // }
 
         // Check from title is unique as (model)
 

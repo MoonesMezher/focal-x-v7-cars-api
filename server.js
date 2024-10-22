@@ -10,8 +10,10 @@ app.use(logger('dev'));
 app.use(express.json())
 
 const carRouter = require('./routes/car.routes')
+const userRouter = require('./routes/user.routes')
 
 app.use('/api/cars', carRouter);
+app.use('/api/users', userRouter);
 app.use('*', (req, res) => res.status(400).json({message: "Invalid API"}))
 
 // connect with database
@@ -30,4 +32,3 @@ mongoose.connect(MONGOURL)
     .catch((error) => {
         console.error('Error connecting to MongoDB:', error);
     });
-
