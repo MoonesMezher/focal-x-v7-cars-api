@@ -26,6 +26,10 @@ const Car = mongoose.model('Car', new mongoose.Schema({
     active: {
         type: Boolean,
         default: true
+    },
+    img: {
+        type: String,
+        required: true
     }
 }, {
     timestamps: true

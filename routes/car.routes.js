@@ -1,6 +1,8 @@
 const express = require('express');
 const Car = require('../models/Car');
 const { default: mongoose } = require('mongoose');
+const role = require('../middlewares/isAdmin.middleware');
+const auth = require('../middlewares/auth.middleware');
 
 const router = express.Router();
 
@@ -108,13 +110,13 @@ router.get('/one/:id', async (req, res) => {
 })
 
 // POST
-router.post('/add', async (req, res) => {
+router.post('/add', [auth, role("user")], async (req, res) => {
     try {
-        const { title, description, brand, color, price } = req.body;
+        const { title, description, brand, color, price, img } = req.body;
 
         // Check this data is required
 
-        if(!title || !description || !brand || !color || !price) {
+        if(!img || !title || !description || !brand || !color || !price) {
             return res.status(400).json({message: 'All fields must be required'})
         }
 
@@ -156,7 +158,7 @@ router.post('/add', async (req, res) => {
 
         // add new car 
 
-        const data = await Car.create({ title, description, brand, color, price });
+        const data = await Car.create({ img, title, description, brand, color, price });
 
         return res.status(200).json({message: 'Added data successfully', data})
     } catch (error) {

@@ -6,6 +6,9 @@ const jwt = require('jsonwebtoken');
 const passwordHashed = require('password-hash');
 const User = require('../models/User');
 
+// middlewares
+const auth = require('../middlewares/auth.middleware');
+
 const createToken = (id) => {
     return jwt.sign({id}, process.env.SECRET_JWT_KEY);
 }
@@ -158,6 +161,12 @@ router.post('/login', async (req, res) => {
 })
 
 // Logout
-router.post('/logout');
+router.post('/logout', auth, async (req, res) => {
+    try {
+        return res.status(200).json({ message: "Logged out succesfully", data: req.user })
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+});
 
 module.exports = router;
